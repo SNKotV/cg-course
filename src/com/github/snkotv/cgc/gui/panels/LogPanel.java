@@ -1,4 +1,4 @@
-package com.github.snkotv.cgc;
+package com.github.snkotv.cgc.gui.panels;
 
 import javax.swing.*;
 import java.awt.*;
