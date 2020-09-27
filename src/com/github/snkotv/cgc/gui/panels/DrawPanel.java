@@ -4,23 +4,32 @@ import com.github.snkotv.cgc.gui.primitives.DrawableObject;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferStrategy;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Queue;
 
-public class DrawPanel extends JPanel {
+public class DrawPanel extends Canvas {
 
     private int width, height;
     private ArrayList<DrawableObject> drawableObjects = new ArrayList<>();
+    private Queue<DrawableObject> drawableObjectsQueue = new ArrayDeque<>();
 
+    private BufferStrategy bs;
+    private Graphics g;
 
     public ArrayList<DrawableObject> getDrawableObjects() {
         return drawableObjects;
+    }
+
+    public Queue<DrawableObject> getDrawableObjectsQueue() {
+        return drawableObjectsQueue;
     }
 
     public DrawPanel(int width, int height) {
         this.width = width;
         this.height = height;
         setPreferredSize(new Dimension(width, height));
-        setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
     }
 
     public int getOriginX() {
@@ -71,20 +80,41 @@ public class DrawPanel extends JPanel {
     }
 
     public void render() {
-        Graphics g = getGraphics();
-        drawGrid(getGraphics());
+
+        if (bs == null) {
+            createBufferStrategy(2);
+        }
+
+        bs = getBufferStrategy();
+        g = bs.getDrawGraphics();
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+        drawGrid(g);
+
+        for (DrawableObject drawableObject: drawableObjectsQueue) {
+            drawableObjects.add(drawableObject);
+            drawableObjectsQueue.remove(drawableObject);
+        }
 
         for (DrawableObject drawObj: drawableObjects) {
             drawObj.onRender(g);
         }
 
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        g.dispose();
+        bs.show();
 
-        render();
+//        try {
+//            Thread.sleep(3);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+        EventQueue.invokeLater(() -> render());
+    }
+
+    public void clear() {
+        drawableObjects.clear();
     }
 
 }

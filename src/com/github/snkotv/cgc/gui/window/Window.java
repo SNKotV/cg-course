@@ -44,10 +44,29 @@ public class Window extends JFrame {
 
     private void addPanels() {
         drawingArea = new DrawPanel((int)(width * 0.5), (int)(width * 0.5));
-        getContentPane().add(drawingArea);
+        getContentPane().add(drawingArea, BorderLayout.WEST);
 
-        logPanel = new LogPanel((int)(width * 0.35), (int)(height * 0.85));
-        getContentPane().add(logPanel);
+        JPanel sidePanel = new JPanel();
+        sidePanel.setPreferredSize(new Dimension((int)(width * 0.35), (int)(height * 0.85)));
+
+        logPanel = new LogPanel((int)(width * 0.35), (int)(height * 0.72));
+        sidePanel.add(logPanel);
+
+        JButton resetButton = new JButton("Reset");
+        resetButton.setPreferredSize(new Dimension((int)(width * 0.1), (int)(height * 0.06)));
+        resetButton.setFont(new Font("TNR", Font.CENTER_BASELINE, 14));
+        resetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                drawingArea.clear();
+                logPanel.clear();
+            }
+        });
+        sidePanel.add(resetButton);
+
+        getContentPane().add(sidePanel, BorderLayout.EAST);
+
+
     }
 
     public DrawPanel getDrawingArea() {

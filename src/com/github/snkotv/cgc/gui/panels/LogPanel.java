@@ -27,6 +27,7 @@ public class LogPanel extends JPanel {
         textArea = new JTextArea();
         textArea.setFont(new Font("TNR", Font.ITALIC,width / 15));
         textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
         textArea.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         textArea.setEditable(false);
 
@@ -38,5 +39,7 @@ public class LogPanel extends JPanel {
     public void printMessage(String message) {
         textArea.append(message + '\n');
     }
+
+    public void clear() { textArea.setText(null); }
 
 }
