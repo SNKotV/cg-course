@@ -1,4 +1,4 @@
-package com.github.snkotv.cgc.lab1;
+package com.github.snkotv.cgc.labs;
 
 import com.github.snkotv.cgc.gui.primitives.Letter;
 import com.github.snkotv.cgc.gui.primitives.LineSegment;

@@ -2,7 +2,7 @@ package com.github.snkotv.cgc.gui.primitives;
 
 import java.awt.*;
 
-public class LineSegment implements DrawableObject {
+public class LineSegment extends DrawableObject {
     private Point A, B;
 
     public LineSegment(Point A, Point B) {
@@ -30,6 +30,7 @@ public class LineSegment implements DrawableObject {
     public void onRender(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(2));
+        g2d.setColor(color);
 
         g2d.drawLine((int)A.getX(), (int)A.getY(), (int)B.getX(), (int)B.getY());
     }

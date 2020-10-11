@@ -1,4 +1,4 @@
-package com.github.snkotv.cgc.lab1;
+package com.github.snkotv.cgc.labs;
 
 import com.github.snkotv.cgc.geom.utils.Vector;
 import com.github.snkotv.cgc.gui.primitives.DrawableObject;
@@ -55,6 +55,9 @@ public class Lab2 {
                     checkPolygonIntersection(newLineSegment);
                     rotationDirection = checkRotationDirection(newLineSegment,
                             (LineSegment)win.getDrawingArea().getDrawableObjects().get(amountOfDrawableElements - 1));
+                    rotationDirection = checkRotationDirection((LineSegment)win.getDrawingArea().getDrawableObjects().get(1),
+                                                            newLineSegment);
+
 
                     win.getDrawingArea().getDrawableObjects().add(newLineSegment);
 
@@ -91,7 +94,9 @@ public class Lab2 {
         LineSegment lineSegment = (LineSegment)it.next();
         while (it.hasNext())
         {
-            isSelfIntersect = isIntersect(lineSegment, ls);
+            if (!isSelfIntersect) {
+                isSelfIntersect = isIntersect(lineSegment, ls);
+            }
             lineSegment = (LineSegment)it.next();
         }
     }
@@ -129,7 +134,7 @@ public class Lab2 {
         z1 = Vector.crossProduct(new Vector(B2.getX() - A2.getX(), B2.getY() - A2.getY()),
                 new Vector(A1.getX() - A2.getX(), A1.getY() - A2.getY())).getZ();
 
-        z1 = Vector.crossProduct(new Vector(B2.getX() - A2.getX(), B2.getY() - A2.getY()),
+        z2 = Vector.crossProduct(new Vector(B2.getX() - A2.getX(), B2.getY() - A2.getY()),
                 new Vector(B1.getX() - A2.getX(), B1.getY() - A2.getY())).getZ();
 
         boolean secondIntersection = z1 * z2 < 0;
@@ -146,6 +151,12 @@ public class Lab2 {
         if (!isConvex) {
             win.getLog().printMessage("The polygon is concave");
             return;
+        }
+
+        if (rotationDirection == 0) {
+            win.getLog().printMessage("Counterclockwise");
+        } else {
+            win.getLog().printMessage("Clockwise");
         }
 
         win.getLog().printMessage("The polygon is convex");

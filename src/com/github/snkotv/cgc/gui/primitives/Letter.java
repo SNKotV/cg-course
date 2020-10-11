@@ -2,13 +2,10 @@ package com.github.snkotv.cgc.gui.primitives;
 
 import java.awt.*;
 
-public class Letter implements DrawableObject {
+public class Letter extends DrawableObject {
 
     private String letter;
     private double x, y;
-    private Color color = Color.BLACK;
-
-    public void setColor(Color color) {this.color = color;}
 
     public Letter(String letter, double x, double y) {
         this.letter = letter;
