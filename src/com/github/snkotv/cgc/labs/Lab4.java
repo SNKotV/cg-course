@@ -15,8 +15,8 @@ import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class Lab3 implements Lab{
-    private Window win = new Window("Lab3", 1680, 1020);
+public class Lab4 implements Lab{
+    private Window win = new Window("Lab4", 1680, 1020);
     private boolean isSelfIntersect = false;
     private boolean isPolygonFormed = false;
     private boolean isConvex = true;
@@ -33,11 +33,11 @@ public class Lab3 implements Lab{
             rotationDirection = -1;
         }
 
-        if (isSelfIntersect) {
-            win.getLog().printMessage("Can't apply algorithm to self intersecting polygon");
-            win.getDrawingArea().getDrawableObjects().clear();
-            return;
-        }
+//        if (isSelfIntersect) {
+//            win.getLog().printMessage("Can't apply algorithm to self intersecting polygon");
+//            win.getDrawingArea().getDrawableObjects().clear();
+//            return;
+//        }
 
         if (isPolygonFormed) {
             Point p = new Point(x, y, 5);
@@ -105,20 +105,19 @@ public class Lab3 implements Lab{
     }
 
     private boolean isInside(Point p) {
-        int intersectionCounter = 0;
+        double angle = 0;
 
         Iterator<DrawableObject> it = win.getDrawingArea().getDrawableObjects().iterator();
         it.next();
         LineSegment lineSegment = (LineSegment)it.next();
         while (lineSegment != null)
         {
-            if (isBelongs(p, lineSegment)) {
+            double cntAngle = computeAngle(p, lineSegment);
+
+            if (Math.abs(Math.abs(cntAngle) - Math.PI) < 1e-12) {
                 return true;
             }
-
-            if (isRayIntersect(p, lineSegment)) {
-                intersectionCounter++;
-            }
+            angle += cntAngle;
 
             try {
                 lineSegment = (LineSegment)it.next();
@@ -127,7 +126,33 @@ public class Lab3 implements Lab{
             }
         }
 
-        return intersectionCounter % 2 != 0;
+        return Math.abs(Math.abs(angle) - 2 * Math.PI) < 1e-12;
+    }
+
+    private double computeAngle(Point p, LineSegment ls) {
+        Vector AB = new Vector(ls.getA().getX() - p.getX(), ls.getA().getY() - p.getY());
+        Vector AC = new Vector(ls.getB().getX() - p.getX(), ls.getB().getY() - p.getY());
+
+        double ABLength = Vector.getLength(AB);
+        double ACLength = Vector.getLength(AC);
+        if (Math.abs(ABLength) < 1e-12 || Math.abs(ACLength) < 1e-12) {
+            return Math.PI;
+        }
+
+//        win.getLog().printMessage("P: " + Vector.dotProduct(AB, AC));
+//        win.getLog().printMessage("AB: " + Vector.getLength(AB));
+//        win.getLog().printMessage("AC: " + Vector.getLength(AC));
+//        win.getLog().printMessage("Cos: " + Vector.dotProduct(AB, AC) / Vector.getLength(AB) / Vector.getLength(AC));
+
+        double dotProduct = Vector.dotProduct(AB, AC) / ABLength / ACLength;
+        dotProduct = Math.max(dotProduct, -1.0);
+        dotProduct = Math.min(dotProduct, 1.0);
+        double angle = Math.acos(dotProduct);
+        if (Vector.crossProduct(AB,AC).getZ() < 0) {
+            angle *= -1;
+        }
+
+        return angle;
     }
 
     private boolean isRayIntersect(Point p, LineSegment ls) {
@@ -137,7 +162,7 @@ public class Lab3 implements Lab{
 
         if (p.getY() > ls.getB().getY() || p.getY() < ls.getA().getY() || Math.abs(p.getY() - ls.getA().getY()) < 1e-12
                 || p.getX() > Math.max(ls.getA().getX(), ls.getB().getX())
-        || Math.abs(p.getX() - Math.max(ls.getA().getX(), ls.getB().getX())) < 1e-12) {
+                || Math.abs(p.getX() - Math.max(ls.getA().getX(), ls.getB().getX())) < 1e-12) {
             return false;
         }
 
@@ -155,7 +180,7 @@ public class Lab3 implements Lab{
         double y1 = p.getY() - ls.getA().getY();
         double x2 = ls.getB().getX() - ls.getA().getX();
         double y2 = ls.getB().getY() - ls.getA().getY();
-        
+
         if (Math.abs(x1 * y2 - x2 * y1) > 1e-12) {
             return false;
         }
@@ -176,7 +201,7 @@ public class Lab3 implements Lab{
         if (((p.getX() > minX || Math.abs(p.getX() - minX) < 1e-12) &&
                 (p.getX() < maxX || Math.abs(p.getX() - maxX) < 1e-12)) &&
                 ((p.getY() > minY || Math.abs(p.getY() - minY) < 1e-12) &&
-                (p.getY() < maxY || Math.abs(p.getY() - maxY) < 1e-12)))
+                        (p.getY() < maxY || Math.abs(p.getY() - maxY) < 1e-12)))
             return true;
 
         return false;
@@ -245,7 +270,7 @@ public class Lab3 implements Lab{
 
 
     public static void main(String[] args) {
-        Lab3 lab = new Lab3();
+        Lab4 lab = new Lab4();
 
         lab.win.getDrawingArea().addMouseListener(new MouseAdapter() {
             @Override
